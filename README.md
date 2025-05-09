@@ -1,5 +1,14 @@
 # pythonic-erosolar-go-fuck-her-vercel
 
+sudo nginx -t
+sudo systemctl reload nginx
+
+# kill some port
+
+sudo lsof -t -i:5000 | xargs sudo kill -9
+
+# Skewered: 13 yr AWS for 1 pw helper protecter!
+
 ![GqXQqP2XYAAEp7O](https://github.com/user-attachments/assets/e6eb269c-1f95-4135-b882-cc74be3f320a)
 
 ![GqXQZ8fWQAAmaTn](https://github.com/user-attachments/assets/11b7d865-4bfc-46e0-9255-7d96feae20b8)
