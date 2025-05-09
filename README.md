@@ -9,6 +9,11 @@ this is production flask serving to port 4999 which nginx reverse proxies to / o
 
 # however i am nicer, and will allow you plebs to run python development_flask.py and then visit port whatever on localhost; eg loalhost:5959
 
+![Screenshot 2025-05-09 at 10 41 24 AM](https://github.com/user-attachments/assets/10fb85f5-0a5f-4255-9d81-4c118a424977)
+
+![Screenshot 2025-05-09 at 10 41 51 AM](https://github.com/user-attachments/assets/a01cd470-b51c-4b98-b5f1-4e64dda04831)
+
+
 # refresh nginx
 
 sudo nginx -t
