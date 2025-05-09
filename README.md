@@ -9,7 +9,7 @@ sudo systemctl reload nginx
 
 # kill some port
 
-sudo lsof -t -i:5000 | xargs sudo kill -9
+sudo lsof -t -i:4999 | xargs sudo kill -9
 
 ![Screenshot 2025-05-09 at 9 36 47 AM](https://github.com/user-attachments/assets/bfbd8af1-6346-4518-b3ba-5d2cccb920aa)
 

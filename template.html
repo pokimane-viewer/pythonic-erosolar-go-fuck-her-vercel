@@ -1,0 +1,165 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Executive Orders Dashboard – Federal View</title>
+<link rel="icon" href="/static/favicon.ico">
+<style>
+/* Federal look & feel */
+@font-face{font-family:"PublicSans";src:url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;700&display=swap");}
+:root{
+  --fed-blue:#112e51;
+  --fed-gold:#fdb81e;
+  --fed-light:#f1f1f1;
+  --fed-dark:#0d1117;
+  --fed-green:#28a745;
+  --fed-orange:#ff8c00;
+}
+html,body{margin:0;padding:0;font-family:"PublicSans",Arial,Helvetica,sans-serif;background:var(--fed-dark);color:var(--fed-light);}
+a{color:var(--fed-gold);text-decoration:none;}
+a:hover{text-decoration:underline;}
+header{background:var(--fed-blue) url("https://cdn.jsdelivr.net/gh/uswds/uswds@latest/dist/img/hero.png") bottom/cover no-repeat;padding:3rem 1rem;text-align:center;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.4);}
+header h1{margin:0;font-size:2.5rem;font-weight:700;}
+header h2{margin:.5rem 0 0;font-size:1.25rem;font-weight:300;}
+main{max-width:1200px;margin:auto;padding:2rem;}
+section{margin-bottom:2.5rem;background:var(--fed-blue);padding:1.5rem;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.3);}
+section h2{margin-top:0;font-size:1.5rem;color:var(--fed-gold);}
+.banner{background:linear-gradient(135deg,#b22234 0%,#8b1a28 100%);color:#fff;text-align:center;padding:1rem 0;font-size:1.75rem;font-weight:700;letter-spacing:1px;margin:2rem 0;}
+.branch-top{background:var(--fed-blue);padding:1.5rem;text-align:center;border-radius:8px;margin-bottom:2rem;}
+.branch-select{appearance:none;padding:.6rem 2.5rem .6rem 1rem;font-size:1rem;border-radius:3rem;border:3px solid var(--fed-gold);background:linear-gradient(45deg,#b22234 0%,#fff 50%,#3c3b6e 100%) center/cover;color:#fff;}
+.branch-select:focus{outline:none;box-shadow:0 0 0 3px rgba(0,153,255,.4);}
+.branch-form button,.branch-top button{padding:.6rem 2rem;font-size:1rem;border:none;border-radius:3rem;background:var(--fed-gold);color:#000;font-weight:600;cursor:pointer;}
+.rank-msg{font-size:1.5rem;text-align:center;margin:1rem auto;padding:.75rem 1rem;background:linear-gradient(135deg,var(--fed-gold) 0%,var(--fed-orange) 100%);color:#000;font-weight:700;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.4);}
+.insignia{height:64px;margin-top:.5rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));}
+.recruit-card{max-width:600px;margin:1rem auto;background:linear-gradient(135deg,#0066cc 0%,#004080 100%);padding:1.25rem;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.4);}
+.status-key{margin:.5rem 0;text-align:center;font-size:.9rem;}
+.status-key span{display:inline-block;margin:0 .5rem;}
+.status-key .line{width:40px;height:4px;background:var(--fed-gold);display:inline-block;vertical-align:middle;}
+.status-key .pending{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid yellow;display:inline-block;vertical-align:middle;}
+.status-key .blocked{color:var(--fed-green);font-weight:700;}
+.status-key .paused{color:var(--fed-orange);font-weight:700;}
+.file-viewer{display:flex;align-items:center;justify-content:center;gap:.5rem;background:var(--fed-blue);padding:1rem;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.3);}
+.file-viewer button{font-size:1.5rem;border:none;background:var(--fed-gold);color:#000;width:48px;height:48px;border-radius:50%;cursor:pointer;}
+#file-content{max-height:500px;overflow:auto;width:100%;text-align:center;}
+ul.gop,ul{list-style:none;padding-left:0;margin:.5rem 0;}
+ul.gop li{color:var(--fed-gold);font-weight:600;margin-bottom:.25rem;}
+ul li{margin-bottom:.25rem;}
+footer{background:var(--fed-blue);color:#fff;text-align:center;padding:2rem 1rem;font-size:.875rem;}
+@media (max-width:600px){header h1{font-size:1.75rem;}main{padding:1rem;}}
+</style>
+
+<header>
+  <h1>United States Executive Orders</h1>
+  <h2>Tracking Presidential Actions & Court Outcomes</h2>
+</header>
+
+<div class="branch-top">
+  {% if not branch %}
+    <form method="get" class="branch-form">
+      <label for="branch" style="color:#fff;font-weight:700;">Choose Your Service Branch</label>
+      <select name="branch" id="branch" class="branch-select">
+        <option value="">--</option>
+        <option value="1">Army</option>
+        <option value="2">Marine Corps</option>
+        <option value="3">Air Force</option>
+        <option value="4">Navy</option>
+        <option value="5">Coast Guard</option>
+        <option value="6">Space Force</option>
+      </select>
+      <button type="submit">Proceed</button>
+    </form>
+  {% else %}
+    {{ rank_msg|safe }}
+    <div class="recruit-card">
+      <p>Ready to serve in the {{ branch_name }}? <a href="{{ recruit_url }}" target="_blank" rel="noopener">Official recruiting site</a></p>
+      <p><a href="https://www.defense.gov" target="_blank" rel="noopener">Visit defense.gov</a></p>
+    </div>
+    {{ grade_form|safe }}
+    {{ training_button|safe }}
+    {{ award|safe }}
+  {% endif %}
+</div>
+
+<div class="banner">America Is Back!</div>
+
+<main>
+  <section class="intro">
+    <h2>About This Dashboard</h2>
+    <p>This dashboard tracks <strong>every Executive Order signed since January&nbsp;20,&nbsp;{{ START_YEAR }}</strong>.</p>
+    <p>See issuance dates, current status, and judicial actions.</p>
+    <div class="status-key">
+      <span class="line"></span> Issued
+      <span class="pending"></span> Pending
+      <span class="blocked">× Blocked</span>
+      <span class="paused">▼ Paused</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Executive Orders Timeline</h2>
+    {{ graph|safe }}
+  </section>
+
+  <section>
+    <h2>Summary</h2>
+    <p>Total Issued: {{ issued_count }} &nbsp;|&nbsp; Blocked: {{ blocked_count }} &nbsp;|&nbsp; Paused: {{ paused_count }}</p>
+  </section>
+
+  <section>
+    <h2>Issued Executive Orders</h2>
+    <ul class="gop">
+      {% for eo in issued %}
+        <li>EO {{ eo.eo_number }} – {{ eo.title }} ({{ eo.date }})</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Blocked & Paused Executive Orders</h2>
+    <ul>
+      {% for eo in not_active %}
+        {% if eo.status == 'blocked' %}
+          <li style="color:var(--fed-green);">EO {{ eo.eo_number }} – {{ eo.title }} (Blocked {{ eo.date }})</li>
+        {% else %}
+          <li style="color:var(--fed-orange);">EO {{ eo.eo_number }} – {{ eo.title }} (Paused {{ eo.date }})</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="file-viewer">
+    <button id="prev-btn">⟨</button>
+    <div id="file-content"></div>
+    <button id="next-btn">⟩</button>
+    <div id="file-error" style="color:#ff6b6b;margin-top:.5rem;"></div>
+  </section>
+</main>
+
+<footer>
+  &copy; {{ TODAY.year }} Executive Office of the President – Data sourced from <a href="https://www.federalregister.gov" target="_blank" rel="noopener">FederalRegister.gov</a>.
+</footer>
+
+<script>
+const files={{ files|tojson }};
+let idx=0;
+const disp=document.getElementById("file-content");
+const err=document.getElementById("file-error");
+function showFile(){
+  const f=files[idx];
+  err.textContent="";disp.innerHTML="";
+  if(!f.exists){err.textContent="Missing: "+f.name;return;}
+  const ext=f.name.split(".").pop().toLowerCase();
+  if(["mp4","webm","m4v"].includes(ext)){
+    const v=document.createElement("video");v.src="/static/"+f.name;v.controls=true;v.style.maxWidth="100%";disp.appendChild(v);
+  }else if(["m4a","mp3","wav","ogg"].includes(ext)){
+    const a=document.createElement("audio");a.src="/static/"+f.name;a.controls=true;disp.appendChild(a);
+  }else{
+    fetch("/static/"+f.name).then(r=>r.ok?r.text():Promise.reject()).then(t=>{const pre=document.createElement("pre");pre.textContent=t;disp.appendChild(pre);}).catch(()=>err.textContent="Error loading "+f.name);
+  }
+  const p=document.createElement("p");
+  p.innerHTML='<a href="/static/'+f.name+'" target="_blank">Open</a> | <a href="/download/'+encodeURIComponent(f.name)+'">Download</a>';
+  disp.appendChild(p);
+}
+document.getElementById("prev-btn").addEventListener("click",()=>{idx=(idx-1+files.length)%files.length;showFile();});
+document.getElementById("next-btn").addEventListener("click",()=>{idx=(idx+1)%files.length;showFile();});
+showFile();
+</script>

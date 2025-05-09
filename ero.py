@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template_string
 import bcrypt, json, time, math as _m
-from waitress import serve  # production WSGI server
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -80,8 +80,6 @@ def index():
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body class="min-h-screen bg-gradient-to-tr from-purple-950 via-indigo-950 to-blue-950 text-white font-sans overflow-x-hidden">
-
-    <!-- PANDA DOMINANCE ZONE -->
     <section id="panda-zone" class="relative h-48 pointer-events-none">
       <div class="absolute inset-0 flex flex-col items-center justify-center animate-bounce space-y-2">
         <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Panda" class="h-28 w-28 drop-shadow-xl">
@@ -90,8 +88,6 @@ def index():
         </span>
       </div>
     </section>
-
-    <!-- Women's History Month Hero -->
     <div class="relative w-full">
       <img src="{{ url_for('static', filename='Sam_Womens_History.png') }}"
            alt="Women's History Month"
@@ -105,7 +101,6 @@ def index():
         </p>
       </div>
     </div>
-
     <header class="backdrop-blur bg-white/10 shadow-lg sticky top-48 z-20">
       <div class="max-w-5xl mx-auto flex items-center justify-between p-4">
         <h1 class="text-2xl font-bold tracking-wide">Password Complexity Visualizer</h1>
@@ -117,7 +112,6 @@ def index():
         </nav>
       </div>
     </header>
-
     <main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
       <section class="text-center space-y-4">
         <h2 class="text-4xl font-extrabold">Stronger Hashes ≠ Impossible Breaks</h2>
@@ -126,7 +120,6 @@ def index():
           Each signup updates live complexity metrics below.
         </p>
       </section>
-
       <section class="grid md:grid-cols-2 gap-8">
         <form class="bg-white/10 rounded-xl p-6 space-y-4" action="{{url_for('signup')}}" method="post">
           <h3 class="text-xl font-semibold">Sign Up</h3>
@@ -140,14 +133,12 @@ def index():
             <button formaction="{{url_for('auto_setup')}}" class="bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-2">Auto Demo</button>
           </div>
         </form>
-
         <form class="bg-white/10 rounded-xl p-6 space-y-4" action="{{url_for('login')}}" method="post">
           <h3 class="text-xl font-semibold">Login</h3>
           <input name="email" placeholder="email" class="w-full px-3 py-2 rounded-lg text-gray-900" />
           <input name="pw" placeholder="password" type="password" class="w-full px-3 py-2 rounded-lg text-gray-900" />
           <button class="w-full bg-orange-600 hover:bg-orange-700 rounded-lg py-2 font-semibold">Login</button>
         </form>
-
         <form class="bg-white/10 rounded-xl p-6 space-y-4 md:col-span-2" action="{{url_for('detect_leak')}}" method="post">
           <h3 class="text-xl font-semibold">Leak Detector</h3>
           <div class="flex gap-2">
@@ -156,13 +147,11 @@ def index():
           </div>
         </form>
       </section>
-
       <section id="charts" class="space-y-16">
         <div class="bg-white/5 rounded-xl p-6">
           <h3 class="text-xl font-semibold mb-4">Erosolar Spirit</h3>
           <canvas id="erosolar"></canvas>
         </div>
-
         <div class="grid md:grid-cols-2 gap-8">
           <div class="bg-white/5 rounded-xl p-6">
             <h3 class="text-xl font-semibold mb-4">Total Complexity</h3>
@@ -174,29 +163,24 @@ def index():
           </div>
         </div>
       </section>
-
       <section id="aws_proof" class="space-y-8">
         <h3 class="text-2xl font-semibold">AWS Proof – 13+ Years to Crack</h3>
         <pre class="bg-gray-900 rounded-lg p-4 overflow-x-auto text-yellow-300">{{proof_json}}</pre>
         <p class="text-sm text-pink-200 italic">Happy Women's History Month – we rise by lifting others!</p>
       </section>
-
       <section id="logs" class="space-y-8">
         <h3 class="text-2xl font-semibold">Logs</h3>
         <pre class="bg-gray-900 rounded-lg p-4 overflow-x-auto text-green-400">{{'\\n'.join(logs)}}</pre>
       </section>
-
       <section id="math" class="space-y-8">
         <h3 class="text-2xl font-semibold">Bcrypt Math</h3>
         <pre class="bg-gray-900 rounded-lg p-4 overflow-x-auto text-cyan-300">{{math_json}}</pre>
         <p class="text-sm text-gray-400 italic">Σ 2<sup>cost</sup> × |pw| represents the total brute-force space an attacker must traverse.</p>
       </section>
     </main>
-
     <footer class="py-8 text-center text-gray-400 text-sm">
       Built with ❤ by Bo — <a href="https://erosolar.online" class="underline hover:text-white">Erosolar</a>
     </footer>
-
     <script>
       const ed={{erosolar|tojson}}, cd={{complexity|tojson}}, pud={{per_user_data|tojson}};
       const baseOpts={responsive:true,plugins:{legend:{position:'top'},title:{display:false}}};
@@ -212,7 +196,7 @@ def index():
        erosolar=erosolar_data, complexity=complexity_data,
        per_user_data=per_user_data, cost=next_cost, proof_json=json.dumps(proof, indent=2))
 
-@app.route('/signup', methods=['POST'])
+@app.route('/ero/signup', methods=['POST'])
 def signup():
     global next_cost
     cost = int(request.form.get('cost', 10) or 10)
@@ -231,7 +215,7 @@ def signup():
     next_cost = cost
     return redirect(url_for('index'))
 
-@app.route('/login', methods=['POST'])
+@app.route('/ero/login', methods=['POST'])
 def login():
     email, pw = request.form['email'].strip(), request.form['pw']
     u = next((x for x in users if x["email"] == email), None)
@@ -242,7 +226,7 @@ def login():
     add_log(f'Login {u["email"]} with "{pw}" → {"success" if ok else "failure"}')
     return redirect(url_for('index'))
 
-@app.route('/detect_leak', methods=['POST'])
+@app.route('/ero/detect_leak', methods=['POST'])
 def detect_leak():
     pw = request.form['pw']
     add_log(f'Users in DB: {len(users)}')
@@ -259,7 +243,7 @@ def detect_leak():
         add_log(f'Leak check: "{pw}" matched no users')
     return redirect(url_for('index'))
 
-@app.route('/auto_setup', methods=['POST'])
+@app.route('/ero/auto_setup', methods=['POST'])
 def auto_setup():
     for idx, pw in enumerate(['password123', 'password321']):
         email = f'erosolar_bits_{int(time.time()*1000)}_{idx}@auto.bot'
