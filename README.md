@@ -2,6 +2,8 @@
 
 if i were nicer for america_is_back, i would have given you the prompt that went into this totally untested gemini WSGI conversion from development flask
 
+# however i am nicer, and will allow you plebs to run python development_flask.py and then visit port whatever on localhost; eg loalhost:5959
+
 # refresh nginx
 
 sudo nginx -t
