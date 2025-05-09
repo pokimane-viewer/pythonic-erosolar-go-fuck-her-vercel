@@ -1,5 +1,9 @@
 # pythonic-erosolar-go-fuck-her-vercel
 
+if i were nicer for america_is_back, i would have given you the prompt that went into this totally untested gemini WSGI conversion from development flask
+
+# refresh nginx
+
 sudo nginx -t
 sudo systemctl reload nginx
 
