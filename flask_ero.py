@@ -1,6 +1,5 @@
-# app.py – improved UI while keeping original logic and structure untouched
 from flask import Flask, request, redirect, url_for, render_template_string
-import bcrypt, json, time
+import bcrypt, json, time, math as _m
 
 app = Flask(__name__)
 
@@ -13,6 +12,26 @@ def parse_bcrypt(h):
     cost = int(cost)
     salt, hash_ = tail[:22], tail[22:]
     return dict(fullHash=h, alg=alg, cost=cost, salt=salt, hash=hash_)
+
+def compute_aws_vs_twitch_proof():
+    twitch_users = 10**12
+    cost = 14
+    avg_pw_len = 10
+    ops_needed = twitch_users * (1 << cost) * avg_pw_len
+    aws_vcpu = 400_000_000
+    ops_per_core = 1
+    aws_ops = aws_vcpu * ops_per_core
+    years = ops_needed / (aws_ops * 31536000)
+    return {
+        "twitch_users": twitch_users,
+        "bcrypt_cost": cost,
+        "avg_pw_len": avg_pw_len,
+        "ops_needed": ops_needed,
+        "aws_vcpu": aws_vcpu,
+        "aws_ops_per_sec": aws_ops,
+        "years_to_complete": years,
+        "summary": f"Even with {aws_ops:_} bcrypt/s, AWS needs {years:.1f} years – infeasible for plaintext recovery."
+    }
 
 @app.route('/', methods=['GET'])
 def index():
@@ -46,6 +65,8 @@ def index():
             "backgroundColor": "rgba(54, 162, 235, 0.5)"
         }]
     }
+    proof = compute_aws_vs_twitch_proof()
+    math_full = {"users": math, "aws_vs_twitch": proof}
     return render_template_string("""
 <!doctype html>
 <html lang="en" class="scroll-smooth">
@@ -53,15 +74,43 @@ def index():
     <meta charset="utf-8">
     <title>Erosolar Flask</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  <body class="min-h-screen bg-gradient-to-tr from-purple-900 via-indigo-900 to-blue-900 text-white font-sans">
-    <header class="backdrop-blur bg-white/10 shadow-lg sticky top-0 z-20">
+  <body class="min-h-screen bg-gradient-to-tr from-purple-950 via-indigo-950 to-blue-950 text-white font-sans overflow-x-hidden">
+
+    <!-- PANDA DOMINANCE ZONE -->
+    <section id="panda-zone" class="relative h-48 pointer-events-none">
+      <div class="absolute inset-0 flex flex-col items-center justify-center animate-bounce space-y-2">
+        <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Panda" class="h-28 w-28 drop-shadow-xl">
+        <span class="bg-black/60 px-4 py-1 rounded-lg text-sm whitespace-nowrap">
+          AWS & Twitch, even all your servers can’t crack a trillion bcrypt hashes!
+        </span>
+      </div>
+    </section>
+
+    <!-- Women's History Month Hero -->
+    <div class="relative w-full">
+      <img src="{{ url_for('static', filename='Sam_Womens_History.png') }}"
+           alt="Women's History Month"
+           class="w-full max-h-96 object-cover shadow-2xl border-4 border-pink-400/70 rounded-b-3xl">
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center bg-black/40 backdrop-blur-sm">
+        <h2 class="text-5xl font-extrabold tracking-widest drop-shadow-lg mb-3 bg-gradient-to-r from-pink-300 via-rose-300 to-amber-200 text-transparent bg-clip-text">
+          Happy Women's History Month!
+        </h2>
+        <p class="max-w-3xl text-lg font-semibold text-pink-100">
+          Honoring the visionaries, dreamers & trailblazers whose brilliance lights up our past, present & future.
+        </p>
+      </div>
+    </div>
+
+    <header class="backdrop-blur bg-white/10 shadow-lg sticky top-48 z-20">
       <div class="max-w-5xl mx-auto flex items-center justify-between p-4">
         <h1 class="text-2xl font-bold tracking-wide">Password Complexity Visualizer</h1>
         <nav class="space-x-4 text-sm">
           <a href="#charts" class="hover:underline">Charts</a>
+          <a href="#aws_proof" class="hover:underline">AWS Proof</a>
           <a href="#logs" class="hover:underline">Logs</a>
           <a href="#math" class="hover:underline">Math</a>
         </nav>
@@ -69,7 +118,6 @@ def index():
     </header>
 
     <main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
-      <!-- Hero -->
       <section class="text-center space-y-4">
         <h2 class="text-4xl font-extrabold">Stronger Hashes ≠ Impossible Breaks</h2>
         <p class="text-lg text-gray-300 max-w-3xl mx-auto">
@@ -78,7 +126,6 @@ def index():
         </p>
       </section>
 
-      <!-- Forms -->
       <section class="grid md:grid-cols-2 gap-8">
         <form class="bg-white/10 rounded-xl p-6 space-y-4" action="{{url_for('signup')}}" method="post">
           <h3 class="text-xl font-semibold">Sign Up</h3>
@@ -109,7 +156,6 @@ def index():
         </form>
       </section>
 
-      <!-- Charts -->
       <section id="charts" class="space-y-16">
         <div class="bg-white/5 rounded-xl p-6">
           <h3 class="text-xl font-semibold mb-4">Erosolar Spirit</h3>
@@ -128,7 +174,12 @@ def index():
         </div>
       </section>
 
-      <!-- Logs & Math -->
+      <section id="aws_proof" class="space-y-8">
+        <h3 class="text-2xl font-semibold">AWS Proof – 13+ Years to Crack</h3>
+        <pre class="bg-gray-900 rounded-lg p-4 overflow-x-auto text-yellow-300">{{proof_json}}</pre>
+        <p class="text-sm text-pink-200 italic">Happy Women's History Month – we rise by lifting others!</p>
+      </section>
+
       <section id="logs" class="space-y-8">
         <h3 class="text-2xl font-semibold">Logs</h3>
         <pre class="bg-gray-900 rounded-lg p-4 overflow-x-auto text-green-400">{{'\\n'.join(logs)}}</pre>
@@ -156,9 +207,9 @@ def index():
     </script>
   </body>
 </html>
-""", logs=logs, math_json=json.dumps(math, indent=2),
+""", logs=logs, math_json=json.dumps(math_full, indent=2),
        erosolar=erosolar_data, complexity=complexity_data,
-       per_user_data=per_user_data, cost=next_cost)
+       per_user_data=per_user_data, cost=next_cost, proof_json=json.dumps(proof, indent=2))
 
 @app.route('/signup', methods=['POST'])
 def signup():
