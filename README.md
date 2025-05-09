@@ -2,6 +2,18 @@
 
 if i were nicer for america_is_back, i would have given you the prompt that went into this totally untested gemini WSGI conversion from development flask
 
+this is production flask serving to port 4999 which nginx reverse proxies to / on americaisback.ino
+
+![Screenshot 2025-05-09 at 10 40 00 AM](https://github.com/user-attachments/assets/cd6c49b9-4eb0-47f2-95a0-249fd5e34363)
+
+
+# however i am nicer, and will allow you plebs to run python development_flask.py and then visit port whatever on localhost; eg loalhost:5959
+
+![Screenshot 2025-05-09 at 10 41 24 AM](https://github.com/user-attachments/assets/10fb85f5-0a5f-4255-9d81-4c118a424977)
+
+![Screenshot 2025-05-09 at 10 41 51 AM](https://github.com/user-attachments/assets/a01cd470-b51c-4b98-b5f1-4e64dda04831)
+
+
 # refresh nginx
 
 sudo nginx -t
