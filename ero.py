@@ -1,6 +1,6 @@
-
 from flask import Flask, request, redirect, url_for, render_template_string
 import bcrypt, json, time, math as _m
+from waitress import serve  # production WSGI server
 
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def compute_aws_vs_twitch_proof():
         "summary": f"Even with {aws_ops:_} bcrypt/s, AWS needs {years:.1f} years – infeasible for plaintext recovery."
     }
 
-@app.route('/ero', methods=['GET'])  # home path changed to /ero
+@app.route('/ero', methods=['GET'])
 def index():
     complexity_per = [(1 << parse_bcrypt(u["hash"])["cost"]) * u["len"] for u in users]
     total_complexity = sum(complexity_per)
@@ -287,4 +287,4 @@ def detect_leak_internal(pw):
         add_log(f'Leak check: "{pw}" matched no users')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    serve(app, host='0.0.0.0', port=5999)
