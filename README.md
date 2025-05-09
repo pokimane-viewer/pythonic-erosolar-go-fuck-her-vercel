@@ -7,6 +7,12 @@ sudo systemctl reload nginx
 
 sudo lsof -t -i:5000 | xargs sudo kill -9
 
+![Screenshot 2025-05-09 at 9 36 47 AM](https://github.com/user-attachments/assets/bfbd8af1-6346-4518-b3ba-5d2cccb920aa)
+
+# coding systems prompt
+
+Provide only code in full including all original unchanged parts fed in, with minimal comments, using the latest training data from June 2024.
+
 # Skewered: 13 yr AWS for 1 pw helper protecter!
 
 ![GqXQqP2XYAAEp7O](https://github.com/user-attachments/assets/e6eb269c-1f95-4135-b882-cc74be3f320a)
